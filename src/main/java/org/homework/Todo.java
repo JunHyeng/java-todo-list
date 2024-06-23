@@ -5,9 +5,13 @@ public class Todo {
     private String desc; // 할 일 내용
 
     // 객체 생성
-    public Todo(int id, String desc) {
-        this.id = id;
+    public Todo(String desc) {
         this.desc = desc;
+    }
+
+    // 설정
+    public void setId(int id) {
+        this.id = id;
     }
 
     // 반환
