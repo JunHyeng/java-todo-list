@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TodoRepository {
-    private Map<Integer, Todo> todoMap = new HashMap<Integer, Todo>(); // 할 일 목록 저장 맵
+    private Map<Integer, Todo> todoMap = new HashMap<>(); // 할 일 목록 저장 맵
     private int currentId = 1; // 고유 번호 지정 변수
 
     // 1.추가
