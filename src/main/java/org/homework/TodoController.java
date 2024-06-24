@@ -6,10 +6,10 @@ public class TodoController {
 
     // 옵션 기능
     public void start() {
-        boolean flag = true;
-        while (flag) {
-            String n = todoView.getOption();
-            InputOption option = InputOption.of(n);
+        boolean isRunning = true;
+        while (isRunning) {
+            int n = todoView.getOption();
+            InputOption option = InputOption.valueOf(n);
             switch (option) {
                 case ADD:
                     addTodo();
@@ -22,7 +22,7 @@ public class TodoController {
                     break;
                 case EXIT:
                     todoView.exit();
-                    flag = false;
+                    isRunning = false;
                     break;
                 case NONE:
                     todoView.none();
