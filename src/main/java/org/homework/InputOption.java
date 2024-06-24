@@ -2,28 +2,22 @@ package org.homework;
 
 public enum InputOption {
     // 입력 옵션 열거형 세팅
-    ADD(1), DELETE(2), VIEW(3), EXIT(4);
+    ADD("1"), DELETE("2"), VIEW("3"), EXIT("4"), NONE("");
 
-    private final int value;
+    private final String value;
 
     // 생성자
-    InputOption(int value) {
+    InputOption(String value) {
         this.value = value;
     }
 
-    // 값 반환
-    public int getValue() {
-        return value;
-    }
-
-    // 옵션 반환
-    public static InputOption valueOf(int value) {
-        for(InputOption option : values()) {
-            if(option.getValue() == value) {
+    // 입력된 값에 따라 InputOption 반환
+    public static InputOption of(String value) {
+        for (InputOption option : values()) {
+            if (option.value.equals(value)) {
                 return option;
             }
         }
-        throw new IllegalArgumentException("잘못된 옵션 값 : " + value);
+        return NONE;
     }
-
 }

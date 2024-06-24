@@ -4,23 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TodoRepository {
-    private Map<Integer, Todo> todoMap = new HashMap<>(); // 할 일 목록 저장 맵
-    private int currentId = 1; // 고유 번호 지정 변수
+    private Map<Integer, Todo> todoMap = new HashMap<>();
+    private int currentId = 1;
 
-    // 1.추가
-    public int add(Todo todo) {
-        int id = currentId++;
-        todo.setId(id);
-        todoMap.put(id, todo);
-        return id;
+    // 할 일 추가
+    public Todo add(Todo todo) {
+        todo.setId(currentId++);
+        todoMap.put(todo.getId(), todo);
+        return todo;
     }
 
-    // 2.삭제
-    public boolean delete(int id) {
-        return todoMap.remove(id) != null;
+    // 할 일 삭제
+    public Todo delete(int id) {
+        return todoMap.remove(id);
     }
 
-    // 3.조회
+    // 할 일 조회
     public Todo view(int id) {
         return todoMap.get(id);
     }
