@@ -1,6 +1,9 @@
 package org.homework;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TodoRepository {
@@ -22,5 +25,29 @@ public class TodoRepository {
     // 할 일 조회
     public Todo view(int id) {
         return todoMap.get(id);
+    }
+
+    // 전체 목록(마감일 기준:오늘 ~ 7일)
+    public List<Todo> findAllDueWithinDays(int days) {
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(days);
+        List<Todo> result = new ArrayList<>();
+        for (Todo todo : todoMap.values()) {
+            if (!todo.getDueDate().isBefore(today) && !todo.getDueDate().isAfter(endDate)) {
+                result.add(todo);
+            }
+        }
+        return result;
+    }
+    
+    // 검색(내용 기반)
+    public List<Todo> searchByKeyword(String keyword) {
+        List<Todo> result = new ArrayList<>();
+        for (Todo todo : todoMap.values()) {
+            if (todo.getDesc().contains(keyword)) {
+                result.add(todo);
+            }
+        }
+        return result;
     }
 }
