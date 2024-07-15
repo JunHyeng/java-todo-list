@@ -1,90 +1,82 @@
 package org.homework;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.time.format.DateTimeParseException;
 
 public class TodoController {
-    private TodoView todoView = new TodoView();
-    private TodoRepository todoRepository = new TodoRepository();
+    private InputView inputView = new InputView();
+    private OutputView outputView = new OutputView();
+    private TodoService todoService = new TodoService();
 
-    // 옵션 기능
-    public void start() {
+    public void run() {
         boolean isRunning = true;
         while (isRunning) {
-            int n = todoView.getOption();
-            InputOption option = InputOption.valueOf(n);
-            switch (option) {
-                case ADD:
-                    addTodo();
-                    break;
-                case DELETE:
-                    deleteTodo();
-                    break;
-                case VIEW:
-                    findTodo();
-                    break;
-                case COMPLETE:
-                    completeTodo();
-                    break;
-                case LIST:
-                    listTodos();
-                    break;
-                case SEARCH:
-                    searchTodos();
-                    break;
-                case EXIT:
-                    todoView.exit();
-                    isRunning = false;
-                    break;
-                case NONE:
-                    todoView.none();
+            try {
+                int n = inputView.getOption();
+                Option option = Option.valueOf(n);
+                switch (option) {
+                    case ADD:
+                        addTodo();
+                        break;
+                    case DELETE:
+                        deleteTodo();
+                        break;
+                    case VIEW:
+                        findTodo();
+                        break;
+                    case COMPLETE:
+                        completeTodo();
+                        break;
+                    case LIST:
+                        listTodos();
+                        break;
+                    case SEARCH:
+                        searchTodos();
+                        break;
+                    case EXIT:
+                        outputView.exit();
+                        isRunning = false;
+                        break;
+                    case NONE:
+                        outputView.none();
+                }
+            } catch (DateTimeParseException e) {
+                outputView.printError("날짜 형식이 잘못되었습니다. (yyyy-MM-dd 형식으로 입력하세요)");
+            } catch (IllegalArgumentException e) {
+                outputView.printError(e.getMessage());
+            } catch (Exception e) {
+                outputView.printError("오류가 발생했습니다: " + e.getMessage());
             }
         }
     }
 
-    // 할 일 추가
     private void addTodo() {
-        String contents = todoView.getContents();
-        LocalDate dueDate = todoView.getDueDate();
-        todoView.printAdd(todoRepository.add(new Todo(contents, dueDate)));
+        String contents = inputView.getContents();
+        LocalDate dueDate = inputView.getDueDate();
+        outputView.printAdd(todoService.addTodo(contents, dueDate));
     }
 
-    // 삭제
     private void deleteTodo() {
-        int id = todoView.getDeleteId();
-        todoView.printDelete(todoRepository.delete(id));
+        int id = inputView.getDeleteId();
+        outputView.printDelete(todoService.deleteTodo(id));
     }
 
-    // 조회
     private void findTodo() {
-        int id = todoView.getFindId();
-        todoView.printFind(todoRepository.view(id));
+        int id = inputView.getFindId();
+        outputView.printFind(todoService.findTodoById(id));
     }
 
-    // 상태변경(완료처리)
     private void completeTodo() {
-        int id = todoView.getId();
-        Todo todo = todoRepository.view(id);
-        if (todo != null) {
-            todo.setStatus("완료");
-        }
-        todoView.printComplete(todo);
+        int id = inputView.getId();
+        outputView.printComplete(todoService.completeTodoById(id));
     }
 
-    // 마감일 기준(오늘 기준 7일) 조회.
     private void listTodos() {
-        List<Todo> todos = todoRepository.findAllDueWithinDays(7);
-        Collections.sort(todos, Comparator.comparing(Todo::getDueDate));
-        todoView.printAll(todos);
+        outputView.printAll(todoService.listTodos());
     }
 
-    // 검색(내용 기반).
     private void searchTodos() {
-        String keyword = todoView.getKeyword();
-        List<Todo> todos = todoRepository.searchByKeyword(keyword);
-        Collections.sort(todos, Comparator.comparing(Todo::getDueDate));
-        todoView.printSearchResult(todos);
+        String keyword = inputView.getKeyword();
+        outputView.printSearchResult(todoService.searchTodos(keyword));
     }
 }

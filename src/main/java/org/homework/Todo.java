@@ -3,27 +3,25 @@ package org.homework;
 import java.time.LocalDate;
 
 public class Todo {
-    private int id; // 고유번호
-    private String desc; // 할 일 내용
-    private String status; // 할 일 상태
-    private LocalDate dueDate; // 마감일
+    private int id;
+    private String desc;
+    private Status status;
+    private LocalDate dueDate;
 
-    // 객체 생성
     public Todo(String desc, LocalDate dueDate) {
         this.desc = desc;
         this.dueDate = dueDate;
-        this.status = "미완료";
+        this.status = Status.미완료;
     }
 
-    // 설정
     public void setId(int id) {
         this.id = id;
     }
+
     public void setDesc(String desc) {
         this.desc = desc;
     }
 
-    // 반환
     public int getId() {
         return id;
     }
@@ -32,11 +30,11 @@ public class Todo {
         return desc;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -46,7 +44,6 @@ public class Todo {
 
     @Override
     public String toString() {
-        return String.format("%d\t%s\t%s\t%s", id, desc, status, dueDate);
+        return String.format("%d\t%s\t\t%s\t\t%s", id, desc, status, dueDate);
     }
-
 }

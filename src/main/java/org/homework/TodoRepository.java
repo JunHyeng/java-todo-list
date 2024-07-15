@@ -1,53 +1,50 @@
 package org.homework;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TodoRepository {
     private Map<Integer, Todo> todoMap = new HashMap<>();
     private int currentId = 1;
 
-    // 할 일 추가
     public Todo add(Todo todo) {
         todo.setId(currentId++);
         todoMap.put(todo.getId(), todo);
         return todo;
     }
 
-    // 할 일 삭제
-    public Todo delete(int id) {
-        return todoMap.remove(id);
+    public Optional<Todo> delete(int id) {
+        return Optional.ofNullable(todoMap.remove(id));
     }
 
-    // 할 일 조회
-    public Todo view(int id) {
-        return todoMap.get(id);
+    public Optional<Todo> view(int id) {
+        return Optional.ofNullable(todoMap.get(id));
     }
 
-    // 전체 목록(마감일 기준:오늘 ~ 7일)
     public List<Todo> findAllDueWithinDays(int days) {
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(days);
-        List<Todo> result = new ArrayList<>();
-        for (Todo todo : todoMap.values()) {
-            if (!todo.getDueDate().isBefore(today) && !todo.getDueDate().isAfter(endDate)) {
-                result.add(todo);
-            }
-        }
-        return result;
+        return todoMap.values().stream()
+                .filter(todo -> isDueWithinRange(todo, today, endDate))
+                .collect(Collectors.toList());
     }
-    
-    // 검색(내용 기반)
+
     public List<Todo> searchByKeyword(String keyword) {
-        List<Todo> result = new ArrayList<>();
-        for (Todo todo : todoMap.values()) {
-            if (todo.getDesc().contains(keyword)) {
-                result.add(todo);
-            }
-        }
-        return result;
+        return todoMap.values().stream()
+                .filter(todo -> containsKeyword(todo, keyword))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isDueWithinRange(Todo todo, LocalDate startDate, LocalDate endDate) {
+        LocalDate dueDate = todo.getDueDate();
+        return !dueDate.isBefore(startDate) && !dueDate.isAfter(endDate);
+    }
+
+    private boolean containsKeyword(Todo todo, String keyword) {
+        return todo.getDesc().contains(keyword);
     }
 }
